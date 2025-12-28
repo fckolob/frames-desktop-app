@@ -44,7 +44,7 @@ class CalculateMaterials:
         return frame_elements
 
     def calculate_frame_bars_quantity_with_custom_length(self, length_group, bar_length):
-        if len(length_group) > 18:
+        if len(length_group) > 100:
             return self.greedy_bin_packing(length_group, bar_length, 4)
         
         pieces = sorted(length_group, reverse=True)
