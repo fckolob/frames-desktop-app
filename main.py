@@ -75,7 +75,7 @@ class FramesApp(ctk.CTk):
         # Row 1
         ctk.CTkLabel(self.form_frame, text="Serie").grid(row=1, column=0, **grid_opts)
         self.serie_cb = ctk.CTkComboBox(self.form_frame, variable=self.serie_var, values=[
-            "s20", "s25", "s25TripleRiel", "probbaCorrediza", "probbaCorredizaTripleRiel"
+            "s20", "s25", "s25TripleRiel", "probbaCorrediza", "probbaCorredizaTripleRiel", "galaCorredizaCuatroRieles"
         ], width=200)
         self.serie_cb.grid(row=1, column=1, **grid_opts)
         

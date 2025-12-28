@@ -114,3 +114,27 @@ def probbaCorredizaTripleRiel(width, height, quantity):
         "glassDvhHeight": {"lenght": height - 165, "quantity": quantity * 3}
     }
     return pieces
+
+def galaCorredizaCuatroRieles(width, height, quantity):
+    width = int(width)
+    height = int(height)
+    quantity = int(quantity)
+
+    pieces = {
+        "horizontalFrame": {"lenght": width - 36, "quantity": quantity * 2},
+        "verticalFrame": {"lenght": height, "quantity": quantity * 2},
+        "lateralShash": {"lenght": height - 65, "quantity": quantity * 2},
+        "centralShash": {"lenght": height - 65, "quantity": quantity * 6},
+        "horizontalShashLateral": {"lenght": width / 4 + 2, "quantity": quantity * 4},
+        "horizontalShashCentral": {"lenght": width / 4 + 21, "quantity": quantity * 4},
+        "glassWidthCentral": {"lenght": width / 4 - 59, "quantity": quantity * 2},
+        "glassWidthLateral": {"lenght": width / 4 - 67, "quantity": quantity * 2},
+        "glassHeight": {"lenght": height - 171, "quantity": quantity * 3},
+        "screenWidth": {"lenght": width / 4 + 11, "quantity": quantity * 2},
+        "screenHeight": {"lenght": height - 62, "quantity": quantity * 2},
+        "screenGuideProbba": {"lenght": width - 5, "quantity": quantity * 2},
+        "glassDvhWidthCentral": {"lenght": width / 4 - 52, "quantity": quantity * 2},
+        "glassDvhWidthLateral": {"lenght": width / 4 - 61, "quantity": quantity * 2},
+        "glassDvhHeight": {"lenght": height - 165, "quantity": quantity * 3}
+    }
+    return pieces

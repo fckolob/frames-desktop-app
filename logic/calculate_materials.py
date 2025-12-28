@@ -106,8 +106,8 @@ class CalculateMaterials:
             
             serie, color, name = key
             
-            is_probba = (serie == "probbaCorrediza")
-            current_bar_length = 6700 if is_probba else self.bar_length
+            is_custom_length_serie = (serie == "probbaCorrediza" or serie == "probbaCorredizaTripleRiel" or serie == "galaCorredizaCuatroRieles")
+            current_bar_length = 6700 if is_custom_length_serie else self.bar_length
             
             length_group = self.calculate_length_groups(frames_list)
             bars_quantity = self.calculate_frame_bars_quantity_with_custom_length(length_group, current_bar_length)
