@@ -22,9 +22,13 @@ class CalculateMaterials:
             
             for key, frame in opening.frames.items():
                 if frame is None: continue
-                # Unique key for grouping: (serie, color, name)
-                # This groups standard frames
-                group_key = (frame.serie, frame.color, frame.name)
+                
+                # Convert code dict to a hashable format (sorted tuple of items)
+                # This ensures frames with different names but same profile codes are grouped
+                code_key = frozenset(frame.code.items())
+                
+                # Unique key for grouping: (serie, color, profile_codes)
+                group_key = (frame.serie, frame.color, code_key)
                 
                 if group_key not in self.grouped_frames:
                     self.grouped_frames[group_key] = []
@@ -106,7 +110,7 @@ class CalculateMaterials:
             
             serie, color, name = key
             
-            is_custom_length_serie = (serie == "probbaCorrediza" or serie == "probbaCorredizaTripleRiel" or serie == "galaCorredizaCuatroRieles")
+            is_custom_length_serie = (serie == "probbaCorrediza" or serie == "probbaCorredizaTripleRiel" or serie == "galaCorredizaCuatroRieles" or serie == "galaCorredizaTripleRiel")
             current_bar_length = 6700 if is_custom_length_serie else self.bar_length
             
             length_group = self.calculate_length_groups(frames_list)
