@@ -13,6 +13,10 @@ class CalculateMaterials:
         self.frame_bars = []
         self.grouped_frames = {} 
 
+    def get_bar_length(self, serie):
+        is_custom_length_serie = (serie == "probbaCorrediza" or serie == "probbaCorredizaTripleRiel" or serie == "galaCorredizaCuatroRieles" or serie == "galaCorredizaTripleRiel")
+        return 6700 if is_custom_length_serie else self.bar_length
+
     def classify_frames(self):
         self.grouped_frames = {}
         for opening in self.openings:
@@ -27,8 +31,11 @@ class CalculateMaterials:
                 # This ensures frames with different names but same profile codes are grouped
                 code_key = frozenset(frame.code.items())
                 
-                # Unique key for grouping: (serie, color, profile_codes)
-                group_key = (frame.serie, frame.color, code_key)
+                bar_length = self.get_bar_length(frame.serie)
+                
+                # Unique key for grouping: (bar_length, color, profile_codes)
+                # We ignore the serie name to allow unification across compatible series
+                group_key = (bar_length, frame.color, code_key)
                 
                 if group_key not in self.grouped_frames:
                     self.grouped_frames[group_key] = []
@@ -48,7 +55,7 @@ class CalculateMaterials:
         return frame_elements
 
     def calculate_frame_bars_quantity_with_custom_length(self, length_group, bar_length):
-        if len(length_group) > 100:
+        if len(length_group) > 18:
             return self.greedy_bin_packing(length_group, bar_length, 4)
         
         pieces = sorted(length_group, reverse=True)
@@ -108,13 +115,10 @@ class CalculateMaterials:
         for key, frames_list in self.grouped_frames.items():
             if not frames_list: continue
             
-            serie, color, name = key
-            
-            is_custom_length_serie = (serie == "probbaCorrediza" or serie == "probbaCorredizaTripleRiel" or serie == "galaCorredizaCuatroRieles" or serie == "galaCorredizaTripleRiel")
-            current_bar_length = 6700 if is_custom_length_serie else self.bar_length
+            bar_length, color, profile_codes = key
             
             length_group = self.calculate_length_groups(frames_list)
-            bars_quantity = self.calculate_frame_bars_quantity_with_custom_length(length_group, current_bar_length)
+            bars_quantity = self.calculate_frame_bars_quantity_with_custom_length(length_group, bar_length)
             
             if bars_quantity > 0:
                 rep = frames_list[0]
