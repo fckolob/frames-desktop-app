@@ -55,57 +55,86 @@ class CalculateMaterials:
         return frame_elements
 
     def calculate_frame_bars_quantity_with_custom_length(self, length_group, bar_length):
-        if len(length_group) > 18:
-            return self.greedy_bin_packing(length_group, bar_length, 4)
+        slice_val = 4
         
+        # 1. Sort Descending
         pieces = sorted(length_group, reverse=True)
-        memo = {}
+        
+        # 2. Initial Solution: Greedy
+        best_solution = self.greedy_bin_packing(pieces, bar_length, slice_val)
 
-        def helper(index, remains):
-            # JS Logic: Math.min(...pieces.slice(index))
-            if index >= len(pieces):
-                return 0
-            
-            min_remaining_piece = min(pieces[index:])
-            filtered_remains = [r for r in remains if r >= min_remaining_piece + 4]
-            
-            key = f"{index}|{','.join(map(str, sorted(filtered_remains)))}"
-            if key in memo:
-                return memo[key]
+        # 3. Threshold check
+        if len(pieces) > 40:
+            return best_solution
 
-            min_bars = float('inf')
-            piece = pieces[index]
-            
-            # Try to put in existing bin
-            for i in range(len(filtered_remains)):
-                if filtered_remains[i] >= piece + 4:
-                    new_remains = list(filtered_remains)
-                    new_remains[i] -= (piece + 4)
-                    res = helper(index + 1, new_remains)
-                    min_bars = min(min_bars, res)
+        # 4. Branch and Bound / DFS
+        count_ref = len(pieces)
+        bins = [0.0] * count_ref # Max bins = number of pieces
+        
+        # We need to use a mutable container for best_solution to modify it inside closure
+        solution_wrapper = {'best': best_solution}
 
-            # Try to start new bin
-            new_remain = bar_length - (piece + 4)
-            res_new = 1 + helper(index + 1, remains + [new_remain])
-            min_bars = min(min_bars, res_new)
-            
-            memo[key] = min_bars
-            return min_bars
+        def dfs_bnb(current_piece_idx, bin_count):
+            # Pruning 1
+            if bin_count >= solution_wrapper['best']:
+                return
 
-        return helper(0, [])
+            # Base case
+            if current_piece_idx >= count_ref:
+                if bin_count < solution_wrapper['best']:
+                    solution_wrapper['best'] = bin_count
+                return
+
+            # Pruning 2: Lower Bound
+            remaining_sum = 0
+            for i in range(current_piece_idx, count_ref):
+                remaining_sum += (pieces[i] + slice_val)
+            
+            current_free_space = 0
+            for i in range(bin_count):
+                current_free_space += bins[i]
+            
+            needed_volume = remaining_sum - current_free_space
+            min_additional = 0
+            if needed_volume > 0:
+                min_additional = math.ceil(needed_volume / bar_length)
+
+            if bin_count + min_additional >= solution_wrapper['best']:
+                return
+
+            piece_size = pieces[current_piece_idx] + slice_val
+
+            # Try existing bins
+            for i in range(bin_count):
+                if bins[i] >= piece_size:
+                    bins[i] -= piece_size
+                    dfs_bnb(current_piece_idx + 1, bin_count)
+                    bins[i] += piece_size # Backtrack
+                    
+                    if solution_wrapper['best'] <= bin_count:
+                        return
+
+            # New bin
+            if bin_count + 1 < solution_wrapper['best']:
+                bins[bin_count] = bar_length - piece_size
+                dfs_bnb(current_piece_idx + 1, bin_count + 1)
+
+        dfs_bnb(0, 0)
+        return solution_wrapper['best']
 
     def greedy_bin_packing(self, pieces, bar_length, slice_val=4):
         bins = []
-        pieces = sorted(pieces, reverse=True)
+        # pieces is assumed sorted desc
         for piece in pieces:
             placed = False
+            piece_size = piece + slice_val
             for i in range(len(bins)):
-                if bins[i] >= piece + slice_val:
-                    bins[i] -= (piece + slice_val)
+                if bins[i] >= piece_size:
+                    bins[i] -= piece_size
                     placed = True
                     break
             if not placed:
-                bins.append(bar_length - (piece + slice_val))
+                bins.append(bar_length - piece_size)
         return len(bins)
 
     def calculate_frame_bars(self):
