@@ -64,8 +64,8 @@ class CalculateMaterials:
         best_solution = self.greedy_bin_packing(pieces, bar_length, slice_val)
 
         # 3. Threshold check
-        if len(pieces) > 40:
-            return best_solution
+        if len(pieces) > 60:
+            return best_solution, "Greedy"
 
         # 4. Branch and Bound / DFS
         count_ref = len(pieces)
@@ -106,6 +106,15 @@ class CalculateMaterials:
 
             # Try existing bins
             for i in range(bin_count):
+                # Pruning 3: Symmetry Breaking
+                symmetric = False
+                for k in range(i):
+                     if abs(bins[k] - bins[i]) < 0.001:
+                         symmetric = True
+                         break
+                
+                if symmetric: continue
+
                 if bins[i] >= piece_size:
                     bins[i] -= piece_size
                     dfs_bnb(current_piece_idx + 1, bin_count)
@@ -120,7 +129,7 @@ class CalculateMaterials:
                 dfs_bnb(current_piece_idx + 1, bin_count + 1)
 
         dfs_bnb(0, 0)
-        return solution_wrapper['best']
+        return solution_wrapper['best'], "Optimal"
 
     def greedy_bin_packing(self, pieces, bar_length, slice_val=4):
         bins = []
@@ -147,7 +156,7 @@ class CalculateMaterials:
             bar_length, color, profile_codes = key
             
             length_group = self.calculate_length_groups(frames_list)
-            bars_quantity = self.calculate_frame_bars_quantity_with_custom_length(length_group, bar_length)
+            bars_quantity, method = self.calculate_frame_bars_quantity_with_custom_length(length_group, bar_length)
             
             if bars_quantity > 0:
                 rep = frames_list[0]
@@ -156,7 +165,8 @@ class CalculateMaterials:
                     rep.spanish_name,
                     rep.serie,
                     rep.color,
-                    rep.code
+                    rep.code,
+                    calculation_method=method
                 ))
     
     def get_frame_bars(self):

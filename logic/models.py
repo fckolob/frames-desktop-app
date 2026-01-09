@@ -21,9 +21,10 @@ class Frame:
             self.half = self.lenght / 2
 
 class Bar:
-    def __init__(self, quantity, name, serie, color, code):
+    def __init__(self, quantity, name, serie, color, code, calculation_method="Unknown"):
         self.quantity = quantity
         self.name = name
         self.serie = serie
         self.color = color
         self.code = code
+        self.calculation_method = calculation_method

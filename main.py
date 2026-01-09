@@ -206,7 +206,7 @@ class FramesApp(ctk.CTk):
             self.output_text.insert(tk.END, "No materials calculated.\n\n")
         
         for bar in bars:
-            line = f"{bar.quantity} Barra(s) de {bar.name} {bar.serie} {bar.color} Codigos: Aluminios del Uruguay = {bar.code.get('aluminiosDelUruguay', 'N/A')} Juan = {bar.code.get('juan', 'N/A')} Urualum = {bar.code.get('urualum', 'N/A')} Abasur = {bar.code.get('abasur', 'N/A')}\n\n"
+            line = f"{bar.quantity} Barra(s) de {bar.name} {bar.serie} {bar.color} [Method: {bar.calculation_method}] Codigos: Aluminios del Uruguay = {bar.code.get('aluminiosDelUruguay', 'N/A')} Juan = {bar.code.get('juan', 'N/A')} Urualum = {bar.code.get('urualum', 'N/A')} Abasur = {bar.code.get('abasur', 'N/A')}\n\n"
             self.output_text.insert(tk.END, line)
 
     
