@@ -64,7 +64,7 @@ class CalculateMaterials:
         best_solution = self.greedy_bin_packing(pieces, bar_length, slice_val)
 
         # 3. Threshold check
-        if len(pieces) > 60:
+        if len(pieces) > 40:
             return best_solution, "Greedy"
 
         # 4. Branch and Bound / DFS
