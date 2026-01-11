@@ -61,18 +61,26 @@ class CalculateMaterials:
         pieces = sorted(length_group, reverse=True)
         
         # 2. Initial Solution: Greedy
-        best_solution = self.greedy_bin_packing(pieces, bar_length, slice_val)
+        best_solution, best_assignments = self.greedy_bin_packing(pieces, bar_length, slice_val)
 
         # 3. Threshold check
         if len(pieces) > 40:
-            return best_solution, "Greedy"
+            return best_solution, "Greedy", best_assignments
 
         # 4. Branch and Bound / DFS
         count_ref = len(pieces)
         bins = [0.0] * count_ref # Max bins = number of pieces
         
+        # 4. Branch and Bound / DFS
+        count_ref = len(pieces)
+        bins = [0.0] * count_ref # Max bins = number of pieces
+        
         # We need to use a mutable container for best_solution to modify it inside closure
-        solution_wrapper = {'best': best_solution}
+        # Also track best assignments
+        solution_wrapper = {'best': best_solution, 'assignments': best_assignments}
+        
+        # Track current assignments during recursion: list of bin indices for each piece [0, 1, 0, ...]
+        current_assignments = [-1] * count_ref
 
         def dfs_bnb(current_piece_idx, bin_count):
             # Pruning 1
@@ -80,9 +88,11 @@ class CalculateMaterials:
                 return
 
             # Base case
+            # Base case
             if current_piece_idx >= count_ref:
                 if bin_count < solution_wrapper['best']:
                     solution_wrapper['best'] = bin_count
+                    solution_wrapper['assignments'] = list(current_assignments) # Copy state
                 return
 
             # Pruning 2: Lower Bound
@@ -117,8 +127,10 @@ class CalculateMaterials:
 
                 if bins[i] >= piece_size:
                     bins[i] -= piece_size
+                    current_assignments[current_piece_idx] = i
                     dfs_bnb(current_piece_idx + 1, bin_count)
                     bins[i] += piece_size # Backtrack
+                    current_assignments[current_piece_idx] = -1
                     
                     if solution_wrapper['best'] <= bin_count:
                         return
@@ -126,13 +138,48 @@ class CalculateMaterials:
             # New bin
             if bin_count + 1 < solution_wrapper['best']:
                 bins[bin_count] = bar_length - piece_size
+                current_assignments[current_piece_idx] = bin_count
                 dfs_bnb(current_piece_idx + 1, bin_count + 1)
+                current_assignments[current_piece_idx] = -1
 
         dfs_bnb(0, 0)
-        return solution_wrapper['best'], "Optimal"
+        
+        # Reconstruct detailed assignment structure from index list
+        # solution_wrapper['assignments'] is like [0, 1, 0, 2] meaning piece 0 in bin 0, piece 1 in bin 1...
+        # We want [[p0, p2], [p1], [p3]]
+        
+        final_assignments = []
+        # Pre-allocate
+        if solution_wrapper['assignments']:
+             num_bins = max(solution_wrapper['assignments']) + 1 if solution_wrapper['assignments'] else 0
+             # Note: max might be -1 if empty, but len(pieces) > 0 handled
+             # Verify consistency: greedy returns bin_count? greedy returns (count, [[..], [..]])
+             
+             # Actually greedy implementation below needs update first to understand structure
+             pass
+
+        # Since greedy returns structured list, we should convert our flat index list to structured list
+        # pieces are sorted desc.
+        if solution_wrapper['assignments']:
+            # Create list of empty lists
+            num_bins = solution_wrapper['best'] # Should match max index + 1
+            # Safety: use computed max to avoid index error if best is loosely tracked
+            max_idx = max(solution_wrapper['assignments'])
+            num_bins = max(num_bins, max_idx + 1)
+            
+            structured_assignments = [[] for _ in range(num_bins)]
+            for p_idx, b_idx in enumerate(solution_wrapper['assignments']):
+                if b_idx >= 0:
+                    structured_assignments[b_idx].append(pieces[p_idx])
+            
+            return solution_wrapper['best'], "Optimal", structured_assignments
+
+        return solution_wrapper['best'], "Optimal", [] # Should not happen if greedy worked
 
     def greedy_bin_packing(self, pieces, bar_length, slice_val=4):
-        bins = []
+        bins = [] # stores remaining space
+        bin_contents = [] # stores list of pieces in each bin
+        
         # pieces is assumed sorted desc
         for piece in pieces:
             placed = False
@@ -140,11 +187,13 @@ class CalculateMaterials:
             for i in range(len(bins)):
                 if bins[i] >= piece_size:
                     bins[i] -= piece_size
+                    bin_contents[i].append(piece)
                     placed = True
                     break
             if not placed:
                 bins.append(bar_length - piece_size)
-        return len(bins)
+                bin_contents.append([piece])
+        return len(bins), bin_contents
 
     def calculate_frame_bars(self):
         self.classify_frames()
@@ -156,18 +205,20 @@ class CalculateMaterials:
             bar_length, color, profile_codes = key
             
             length_group = self.calculate_length_groups(frames_list)
-            bars_quantity, method = self.calculate_frame_bars_quantity_with_custom_length(length_group, bar_length)
+            bars_quantity, method, details = self.calculate_frame_bars_quantity_with_custom_length(length_group, bar_length)
             
             if bars_quantity > 0:
                 rep = frames_list[0]
-                self.frame_bars.append(Bar(
+                new_bar = Bar(
                     bars_quantity,
                     rep.spanish_name,
                     rep.serie,
                     rep.color,
                     rep.code,
                     calculation_method=method
-                ))
+                )
+                new_bar.cutting_details = details
+                self.frame_bars.append(new_bar)
     
     def get_frame_bars(self):
         self.calculate_frame_bars()

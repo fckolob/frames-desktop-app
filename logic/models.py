@@ -28,3 +28,4 @@ class Bar:
         self.color = color
         self.code = code
         self.calculation_method = calculation_method
+        self.cutting_details = [] # List of lists of floats

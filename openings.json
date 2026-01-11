@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "width": 1200.0,
+    "height": 1500.0,
+    "serie": "s20",
+    "color": "anodizado",
+    "dvh": false,
+    "preframe": false,
+    "quantity": 14
+  }
+]

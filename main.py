@@ -206,8 +206,24 @@ class FramesApp(ctk.CTk):
             self.output_text.insert(tk.END, "No materials calculated.\n\n")
         
         for bar in bars:
-            line = f"{bar.quantity} Barra(s) de {bar.name} {bar.serie} {bar.color} [Method: {bar.calculation_method}] Codigos: Aluminios del Uruguay = {bar.code.get('aluminiosDelUruguay', 'N/A')} Juan = {bar.code.get('juan', 'N/A')} Urualum = {bar.code.get('urualum', 'N/A')} Abasur = {bar.code.get('abasur', 'N/A')}\n\n"
+            line = f"{bar.quantity} Barra(s) de {bar.name} {bar.serie} {bar.color} [Method: {bar.calculation_method}] Codigos: Aluminios del Uruguay = {bar.code.get('aluminiosDelUruguay', 'N/A')} Juan = {bar.code.get('juan', 'N/A')} Urualum = {bar.code.get('urualum', 'N/A')} Abasur = {bar.code.get('abasur', 'N/A')}\n"
             self.output_text.insert(tk.END, line)
+            
+            if hasattr(bar, 'cutting_details') and bar.cutting_details:
+                for i, cuts in enumerate(bar.cutting_details):
+                    cuts_str = ", ".join([f"{c:.0f}" for c in cuts])
+                    waste = bar.quantity * 0 # Placeholder if we want per-bar waste, but simple logic: 
+                    # Actually bar.quantity is total bars. cutting_details is list of *unique patterns*? 
+                    # NO. greedy/bnb returns specific bins for *all* pieces. 
+                    # So len(cutting_details) should equal bar.quantity ideally.
+                    
+                    # calculate used
+                    used = sum([c + 4 for c in cuts])
+                    remaining = (6700 if bar.serie in ["probbaCorrediza", "probbaCorredizaTripleRiel", "galaCorredizaTripleRiel", "galaCorredizaCuatroRieles"] else 5900) - used + 4
+                    
+                    self.output_text.insert(tk.END, f"  Barra {i+1}: [{cuts_str}] (Resto: {remaining:.0f})\n")
+            
+            self.output_text.insert(tk.END, "\n")
 
     
     def print_output(self):
