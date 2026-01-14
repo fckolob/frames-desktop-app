@@ -61,23 +61,20 @@ class CalculateMaterials:
         pieces = sorted(length_group, reverse=True)
         
         # 2. Initial Solution: Greedy
-        best_solution, best_assignments = self.greedy_bin_packing(pieces, bar_length, slice_val)
-
+        greedy_result, best_assignments = self.greedy_bin_packing(pieces, bar_length, slice_val)
+        
         # 3. Threshold check
         if len(pieces) > 40:
-            return best_solution, "Greedy", best_assignments
+            return greedy_result, "Greedy", best_assignments
 
         # 4. Branch and Bound / DFS
         count_ref = len(pieces)
         bins = [0.0] * count_ref # Max bins = number of pieces
         
-        # 4. Branch and Bound / DFS
-        count_ref = len(pieces)
-        bins = [0.0] * count_ref # Max bins = number of pieces
-        
-        # We need to use a mutable container for best_solution to modify it inside closure
-        # Also track best assignments
-        solution_wrapper = {'best': best_solution, 'assignments': best_assignments}
+        # We start with greedy solution as upper bound
+        # We track assignments as a simple list of bin indices for each piece [0, 1, 0...]
+        # If we don't beat greedy, we keep assignments as None and return greedy structure later.
+        solution_wrapper = {'best': greedy_result, 'assignments': None}
         
         # Track current assignments during recursion: list of bin indices for each piece [0, 1, 0, ...]
         current_assignments = [-1] * count_ref
@@ -144,37 +141,30 @@ class CalculateMaterials:
 
         dfs_bnb(0, 0)
         
-        # Reconstruct detailed assignment structure from index list
-        # solution_wrapper['assignments'] is like [0, 1, 0, 2] meaning piece 0 in bin 0, piece 1 in bin 1...
-        # We want [[p0, p2], [p1], [p3]]
-        
-        final_assignments = []
-        # Pre-allocate
-        if solution_wrapper['assignments']:
-             num_bins = max(solution_wrapper['assignments']) + 1 if solution_wrapper['assignments'] else 0
-             # Note: max might be -1 if empty, but len(pieces) > 0 handled
-             # Verify consistency: greedy returns bin_count? greedy returns (count, [[..], [..]])
-             
-             # Actually greedy implementation below needs update first to understand structure
-             pass
-
-        # Since greedy returns structured list, we should convert our flat index list to structured list
-        # pieces are sorted desc.
-        if solution_wrapper['assignments']:
-            # Create list of empty lists
-            num_bins = solution_wrapper['best'] # Should match max index + 1
-            # Safety: use computed max to avoid index error if best is loosely tracked
-            max_idx = max(solution_wrapper['assignments'])
-            num_bins = max(num_bins, max_idx + 1)
+        # If we have a new best assignment from BnB (flat list), reconstruct it
+        if solution_wrapper['assignments'] is not None:
+            # Reconstruct detailed assignment structure from index list
+            # solution_wrapper['assignments'] is like [0, 1, 0, 2] meaning piece 0 in bin 0...
+            
+            # Helper to safely get max even if empty
+            assigns = solution_wrapper['assignments']
+            if not assigns:
+                return solution_wrapper['best'], "Optimal", []
+            
+            max_idx = max(assigns)
+            num_bins = max(solution_wrapper['best'], max_idx + 1)
             
             structured_assignments = [[] for _ in range(num_bins)]
-            for p_idx, b_idx in enumerate(solution_wrapper['assignments']):
+            # pieces is sorted desc
+            for p_idx, b_idx in enumerate(assigns):
                 if b_idx >= 0:
-                    structured_assignments[b_idx].append(pieces[p_idx])
+                     structured_assignments[b_idx].append(pieces[p_idx])
             
             return solution_wrapper['best'], "Optimal", structured_assignments
-
-        return solution_wrapper['best'], "Optimal", [] # Should not happen if greedy worked
+        else:
+            # BnB didn't find strictly better solution, return Greedy result
+            # Use "Optimal" label if greedy was indeed optimal (conceptually covers this case if best_solution matches greedy)
+            return greedy_result, "Optimal", best_assignments
 
     def greedy_bin_packing(self, pieces, bar_length, slice_val=4):
         bins = [] # stores remaining space
