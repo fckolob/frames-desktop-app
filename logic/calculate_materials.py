@@ -4,7 +4,7 @@ from .opening import Opening
 import math
 
 class CalculateMaterials:
-    def __init__(self, openings=None, bar_length=5900):
+    def __init__(self, openings=None, bar_length=5950):
         if openings is None:
             openings = []
         self.slice = 4
@@ -15,7 +15,7 @@ class CalculateMaterials:
 
     def get_bar_length(self, serie):
         is_custom_length_serie = (serie == "probbaCorrediza" or serie == "probbaCorredizaTripleRiel" or serie == "galaCorredizaCuatroRieles" or serie == "galaCorredizaTripleRiel")
-        return 6700 if is_custom_length_serie else self.bar_length
+        return 6750 if is_custom_length_serie else self.bar_length
 
     def classify_frames(self):
         self.grouped_frames = {}

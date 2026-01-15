@@ -219,7 +219,7 @@ class FramesApp(ctk.CTk):
                     
                     # calculate used
                     used = sum([c + 4 for c in cuts])
-                    remaining = (6700 if bar.serie in ["probbaCorrediza", "probbaCorredizaTripleRiel", "galaCorredizaTripleRiel", "galaCorredizaCuatroRieles"] else 5900) - used + 4
+                    remaining = (6750 if bar.serie in ["probbaCorrediza", "probbaCorredizaTripleRiel", "galaCorredizaTripleRiel", "galaCorredizaCuatroRieles"] else 5950) - used + 4
                     
                     self.output_text.insert(tk.END, f"  Barra {i+1}: [{cuts_str}] (Resto: {remaining:.0f})\n")
             

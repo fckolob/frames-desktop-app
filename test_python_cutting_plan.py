@@ -27,7 +27,7 @@ def test_cutting_plan():
     
     # Test Greedy
     pieces = [1500.0, 1500.0, 1500.0, 1000.0, 1000.0, 500.0]
-    bar_len = 5900.0
+    bar_len = 5950.0
     
     qty, method, details = calc.calculate_frame_bars_quantity_with_custom_length(pieces, bar_len)
     
