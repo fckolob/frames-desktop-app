@@ -1,5 +1,5 @@
 
-from .calculate_pieces import s20, s25, s25TripleRiel, probbaCorrediza, probbaCorredizaTripleRiel, galaCorredizaCuatroRieles, galaCorredizaTripleRiel
+from .calculate_pieces import s20, s25, s25TripleRiel, probbaCorrediza, probbaCorredizaTripleRiel, galaCorredizaCuatroRieles, galaCorredizaTripleRiel, galaCorrediza
 from .models import Frame
 
 class Opening:
@@ -32,6 +32,8 @@ class Opening:
             self.pieces = galaCorredizaCuatroRieles(self.width, self.height, self.quantity)
         elif self.serie == "galaCorredizaTripleRiel":
             self.pieces = galaCorredizaTripleRiel(self.width, self.height, self.quantity)
+        elif self.serie == "galaCorrediza":
+            self.pieces = galaCorrediza(self.width, self.height, self.quantity)
 
     def framing(self):
         self.calculate_pieces()
@@ -111,8 +113,8 @@ class Opening:
                 self.frames["horizontalShash"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 90025"}, self.pieces["horizontalShash"]["lenght"], "Horizontal Shash for Single Glass", "Horizontal de Hoja para Vidrio Simple", self.color, self.pieces["horizontalShash"]["quantity"])
                 self.glass = {"glassWidth": self.pieces["glassWidth"], "glassHeight": self.pieces["glassHeight"]}
 
-            self.frames["screenShash"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 41043"}, {"width": self.pieces["screenWidth"]["lenght"], "height": self.pieces["screenHeight"]["lenght"]}, "Screen Shash", "Hoja de Mosquitero", self.color, quantity=0, width_quantity=self.pieces["screenWidth"]["quantity"], height_quantity=self.pieces["screenHeight"]["quantity"])
-            self.frames["screenGuideProbba"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93074"}, self.pieces["screenGuideProbba"]["lenght"], "Screen Guide", "Guía de Mosquitero", self.color, self.pieces["screenGuideProbba"]["quantity"])
+            self.frames["screenShash"] = Frame("probbaCorrediza", {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 41043"}, {"width": self.pieces["screenWidth"]["lenght"], "height": self.pieces["screenHeight"]["lenght"]}, "Screen Shash", "Hoja de Mosquitero", self.color, quantity=0, width_quantity=self.pieces["screenWidth"]["quantity"], height_quantity=self.pieces["screenHeight"]["quantity"])
+            self.frames["screenGuideProbba"] = Frame("probbaCorrediza", {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93074"}, self.pieces["screenGuideProbba"]["lenght"], "Screen Guide", "Guía de Mosquitero", self.color, self.pieces["screenGuideProbba"]["quantity"])
 
         elif self.serie == "probbaCorredizaTripleRiel":
             self.frames["horizontalFrame"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93054"}, self.pieces["horizontalFrame"]["lenght"], "Horizontal Frame Triple Riel", "Horizontal de Marco triple Riel", self.color, self.pieces["horizontalFrame"]["quantity"])
@@ -131,8 +133,8 @@ class Opening:
                 self.frames["horizontalShashCentral"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 90025"}, self.pieces["horizontalShashCentral"]["lenght"], "Horizontal Shash for Single Glass (Central Shash)", "Horizontal de Hoja para Vidrio Simple (Hoja Central)", self.color, self.pieces["horizontalShashCentral"]["quantity"])
                 self.glass = {"glassWidthLateral": self.pieces["glassWidthLateral"], "glassWidthCentral": self.pieces["glassWidthCentral"], "glassHeight": self.pieces["glassHeight"]}
 
-            self.frames["screenShash"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 41043"}, {"width": self.pieces["screenWidth"]["lenght"], "height": self.pieces["screenHeight"]["lenght"]}, "Screen Shash", "Hoja de Mosquitero", self.color, quantity=0, width_quantity=self.pieces["screenWidth"]["quantity"], height_quantity=self.pieces["screenHeight"]["quantity"])
-            self.frames["screenGuideProbba"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93074"}, self.pieces["screenGuideProbba"]["lenght"], "Screen Guide", "Guía de Mosquitero", self.color, self.pieces["screenGuideProbba"]["quantity"])
+            self.frames["screenShash"] = Frame("probbaCorrediza", {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 41043"}, {"width": self.pieces["screenWidth"]["lenght"], "height": self.pieces["screenHeight"]["lenght"]}, "Screen Shash", "Hoja de Mosquitero", self.color, quantity=0, width_quantity=self.pieces["screenWidth"]["quantity"], height_quantity=self.pieces["screenHeight"]["quantity"])
+            self.frames["screenGuideProbba"] = Frame("probbaCorrediza", {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93074"}, self.pieces["screenGuideProbba"]["lenght"], "Screen Guide", "Guía de Mosquitero", self.color, self.pieces["screenGuideProbba"]["quantity"])
 
         elif self.serie == "galaCorredizaCuatroRieles":
             self.frames["horizontalFrame"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93067"}, self.pieces["horizontalFrame"]["lenght"], "Horizontal Frame Cuatro Rieles", "Horizontal de Marco cuatro Rieles", self.color, self.pieces["horizontalFrame"]["quantity"])
@@ -151,8 +153,8 @@ class Opening:
                 self.frames["horizontalShashCentral"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93005"}, self.pieces["horizontalShashCentral"]["lenght"], "Horizontal Shash for Single Glass (Central Shash) gala", "Horizontal de Hoja para Vidrio Simple (Hoja Central) gala", self.color, self.pieces["horizontalShashCentral"]["quantity"])
                 self.glass = {"glassWidthLateral": self.pieces["glassWidthLateral"], "glassWidthCentral": self.pieces["glassWidthCentral"], "glassHeight": self.pieces["glassHeight"]}
 
-            self.frames["screenShash"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 41043"}, {"width": self.pieces["screenWidth"]["lenght"], "height": self.pieces["screenHeight"]["lenght"]}, "Screen Shash", "Hoja de Mosquitero", self.color, quantity=0, width_quantity=self.pieces["screenWidth"]["quantity"], height_quantity=self.pieces["screenHeight"]["quantity"])
-            self.frames["screenGuideProbba"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93074"}, self.pieces["screenGuideProbba"]["lenght"], "Screen Guide", "Guía de Mosquitero", self.color, self.pieces["screenGuideProbba"]["quantity"])
+            self.frames["screenShash"] = Frame("probbaCorrediza", {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 41043"}, {"width": self.pieces["screenWidth"]["lenght"], "height": self.pieces["screenHeight"]["lenght"]}, "Screen Shash", "Hoja de Mosquitero", self.color, quantity=0, width_quantity=self.pieces["screenWidth"]["quantity"], height_quantity=self.pieces["screenHeight"]["quantity"])
+            self.frames["screenGuideProbba"] = Frame("probbaCorrediza", {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93074"}, self.pieces["screenGuideProbba"]["lenght"], "Screen Guide", "Guía de Mosquitero", self.color, self.pieces["screenGuideProbba"]["quantity"])
 
         elif self.serie == "galaCorredizaTripleRiel":
             self.frames["horizontalFrame"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93054"}, self.pieces["horizontalFrame"]["lenght"], "Horizontal Frame Triple Riel", "Horizontal de Marco triple Riel", self.color, self.pieces["horizontalFrame"]["quantity"])
@@ -171,8 +173,26 @@ class Opening:
                 self.frames["horizontalShashCentral"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93005"}, self.pieces["horizontalShashCentral"]["lenght"], "Horizontal Shash for Single Glass (Central Shash) gala", "Horizontal de Hoja para Vidrio Simple (Hoja Central) gala", self.color, self.pieces["horizontalShashCentral"]["quantity"])
                 self.glass = {"glassWidthLateral": self.pieces["glassWidthLateral"], "glassWidthCentral": self.pieces["glassWidthCentral"], "glassHeight": self.pieces["glassHeight"]}
 
-            self.frames["screenShash"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 41043"}, {"width": self.pieces["screenWidth"]["lenght"], "height": self.pieces["screenHeight"]["lenght"]}, "Screen Shash", "Hoja de Mosquitero", self.color, quantity=0, width_quantity=self.pieces["screenWidth"]["quantity"], height_quantity=self.pieces["screenHeight"]["quantity"])
-            self.frames["screenGuideProbba"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93074"}, self.pieces["screenGuideProbba"]["lenght"], "Screen Guide", "Guía de Mosquitero", self.color, self.pieces["screenGuideProbba"]["quantity"])
+            self.frames["screenShash"] = Frame("probbaCorrediza", {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 41043"}, {"width": self.pieces["screenWidth"]["lenght"], "height": self.pieces["screenHeight"]["lenght"]}, "Screen Shash", "Hoja de Mosquitero", self.color, quantity=0, width_quantity=self.pieces["screenWidth"]["quantity"], height_quantity=self.pieces["screenHeight"]["quantity"])
+            self.frames["screenGuideProbba"] = Frame("probbaCorrediza", {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93074"}, self.pieces["screenGuideProbba"]["lenght"], "Screen Guide", "Guía de Mosquitero", self.color, self.pieces["screenGuideProbba"]["quantity"])
+
+        elif self.serie == "galaCorrediza":
+            self.frames["horizontalFrame"] = Frame("probbaCorrediza", {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93150"}, self.pieces["horizontalFrame"]["lenght"], "Horizontal Frame", "Horizontal de Marco", self.color, self.pieces["horizontalFrame"]["quantity"])
+            self.frames["verticalFrame"] = Frame("probbaCorrediza", {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 90021"}, self.pieces["verticalFrame"]["lenght"], "Vertical Frame", "Lateral de Marco", self.color, self.pieces["verticalFrame"]["quantity"])
+            
+            if self.dvh:
+                self.frames["lateralShash"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 45031"}, self.pieces["lateralShash"]["lenght"], "Lateral Shash for DVH gala", "Lateral de Hoja para DVH gala", self.color, self.pieces["lateralShash"]["quantity"])
+                self.frames["centralShash"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 45033"}, self.pieces["centralShash"]["lenght"], "Central Shash for DVH gala", "Enganche para DVH gala", self.color, self.pieces["centralShash"]["quantity"])
+                self.frames["horizontalShash"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 45032"}, self.pieces["horizontalShash"]["lenght"], "Horizontal Shash for DVH gala", "Horizontal de Hoja para DVH gala", self.color, self.pieces["horizontalShash"]["quantity"])
+                self.glass = {"glassWidth": self.pieces["glassDvhWidth"], "glassHeight": self.pieces["glassDvhHeight"]}
+            else:
+                self.frames["lateralShash"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93007"}, self.pieces["lateralShash"]["lenght"], "Lateral Shash for Single Glass gala", "Lateral de Hoja para Vidrio Simple gala", self.color, self.pieces["lateralShash"]["quantity"])
+                self.frames["centralShash"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93009"}, self.pieces["centralShash"]["lenght"], "Central Shash for Single Glass gala", "Enganche para Vidrio Simple gala", self.color, self.pieces["centralShash"]["quantity"])
+                self.frames["horizontalShash"] = Frame(self.serie, {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93005"}, self.pieces["horizontalShash"]["lenght"], "Horizontal Shash for Single Glass gala", "Horizontal de Hoja para Vidrio Simple gala", self.color, self.pieces["horizontalShash"]["quantity"])
+                self.glass = {"glassWidth": self.pieces["glassWidth"], "glassHeight": self.pieces["glassHeight"]}
+    
+            self.frames["screenShash"] = Frame("probbaCorrediza", {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 41043"}, {"width": self.pieces["screenWidth"]["lenght"], "height": self.pieces["screenHeight"]["lenght"]}, "Screen Shash", "Hoja de Mosquitero", self.color, quantity=0, width_quantity=self.pieces["screenWidth"]["quantity"], height_quantity=self.pieces["screenHeight"]["quantity"])
+            self.frames["screenGuideProbba"] = Frame("probbaCorrediza", {"abasur": "Not Available", "urualum": "Not Available", "juan": "Not Available", "aluminiosDelUruguay": "PN 93074"}, self.pieces["screenGuideProbba"]["lenght"], "Screen Guide", "Guía de Mosquitero", self.color, self.pieces["screenGuideProbba"]["quantity"])
 
     def init(self):
         self.framing()

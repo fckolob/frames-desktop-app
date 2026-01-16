@@ -14,7 +14,7 @@ class CalculateMaterials:
         self.grouped_frames = {} 
 
     def get_bar_length(self, serie):
-        is_custom_length_serie = (serie == "probbaCorrediza" or serie == "probbaCorredizaTripleRiel" or serie == "galaCorredizaCuatroRieles" or serie == "galaCorredizaTripleRiel")
+        is_custom_length_serie = (serie == "probbaCorrediza" or serie == "probbaCorredizaTripleRiel" or serie == "galaCorredizaCuatroRieles" or serie == "galaCorredizaTripleRiel" or serie == "galaCorrediza")
         return 6750 if is_custom_length_serie else self.bar_length
 
     def classify_frames(self):
@@ -33,9 +33,9 @@ class CalculateMaterials:
                 
                 bar_length = self.get_bar_length(frame.serie)
                 
-                # Unique key for grouping: (bar_length, color, profile_codes)
-                # We ignore the serie name to allow unification across compatible series
-                group_key = (bar_length, frame.color, code_key)
+                # Unique key for grouping: (bar_length, color, profile_codes, serie)
+                # We include serie to match Web App logic (where only specific unifications are done by overriding serie name)
+                group_key = (bar_length, frame.color, code_key, frame.serie)
                 
                 if group_key not in self.grouped_frames:
                     self.grouped_frames[group_key] = []
@@ -192,7 +192,7 @@ class CalculateMaterials:
         for key, frames_list in self.grouped_frames.items():
             if not frames_list: continue
             
-            bar_length, color, profile_codes = key
+            bar_length, color, profile_codes, serie = key
             
             length_group = self.calculate_length_groups(frames_list)
             bars_quantity, method, details = self.calculate_frame_bars_quantity_with_custom_length(length_group, bar_length)
